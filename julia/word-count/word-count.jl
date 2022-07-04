@@ -2,28 +2,25 @@ using StatsBase
 
 function wordcount(sentence)
     
-    words = filter.(character_filter,
-        split(sentence, " ") .|> 
-        lowercase)
-    
-    words = filter(!isempty, words)
+    words = split(sentence, !acceptable_character, keepempty = false) .|> 
+        lowercase
 
-    for i in 1:length(words)
+    for i in eachindex(words)
         words[i] = strip(words[i], [''', '\n', '\t', ' '])
     end
-    @show words
     words != [""] ? countmap(words) : Dict{Any, Any}()
 end
 
 # A function to filter out non-alphanumeric characters
-function character_filter(input)
+function acceptable_character(input)
     if isletter(input)
         return true
     elseif isnumeric(input)
         return true
-    elseif input == ''' || input == " " || input == ","
+    elseif input == '''
         return true
     else
         return false
     end
 end
+
