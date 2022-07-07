@@ -1,23 +1,13 @@
-using Combinatorics
 
 function allergy_list(score)
     allergens, scores = ["eggs", "peanuts", "shellfish", "strawberries", 
                         "tomatoes", "chocolate", "pollen", "cats"], 
                         [1, 2, 4, 8, 16, 32, 64, 128]
     score = score % 256
-
-    allergy_list = []
-    possible_scores = collect(powerset(scores))
-    possible_scores_sum = sum.(possible_scores)
-
-    for (index, score_sum) ∈ enumerate(possible_scores_sum)
-        score == score_sum && push!(allergy_list, possible_scores[index])
-    end
+    is_allergic_to = digits(score, base = 2, pad = length(scores))
     
-    Set(allergens[scores .∈ allergy_list])
+    Set(allergens[is_allergic_to .== true])
 end
-
-
 
 function allergic_to(score, allergen)
     allergen ∈ allergy_list(score)
